@@ -24,16 +24,19 @@
 
 // Device-specific MQTT topics and settings
 #ifdef DEVICE_TYPE_RELAY
-    #define DEVICE_NAME "relay_1"
-    #define MQTT_TOPIC_COMMAND "home/relay_1/command"    // Subscribe: receives ON/OFF
-    #define MQTT_TOPIC_STATE "home/relay_1/state"        // Publish: sends current state
+    #define DEVICE_NAME "relay"
+    #define DEVICE_TYPE_STR "relay"
+    #define MQTT_TOPIC_COMMAND "branko/boiler/control"       // Subscribe: receives TOGGLE commands
+    #define MQTT_TOPIC_ACK "branko/boiler/ack"               // Publish: sends ACK after receiving command
+    #define MQTT_TOPIC_STATUS "branko/devices/relay/status"  // Publish: device connection status
     #define RELAY_GPIO 2
 #endif
 
 #ifdef DEVICE_TYPE_TEMP_SENSOR
-    #define DEVICE_NAME "temp_sensor_1"
-    #define MQTT_TOPIC_TEMP "home/temp_sensor_1/temperature"
-    #define MQTT_TOPIC_STATUS "home/temp_sensor_1/status"
+    #define DEVICE_NAME "temp_sensor"
+    #define DEVICE_TYPE_STR "sensor"
+    #define MQTT_TOPIC_TEMP "branko/sensor/temperature"           // Publish: temperature readings
+    #define MQTT_TOPIC_STATUS "branko/devices/temp_sensor/status" // Publish: device connection status
     #define TEMP_SENSOR_GPIO 4
     #define TEMP_PUBLISH_INTERVAL_MS 10000  // Publish every 10 seconds
 #endif

@@ -5,6 +5,7 @@
 #include "nvs_flash.h"
 #include "config.h"
 #include "wifi_manager.h"
+#include "mqtt_client.h"
 
 static const char *TAG = "MAIN";
 
@@ -25,6 +26,10 @@ void app_main(void)
     // Initialize and connect WiFi
     ESP_ERROR_CHECK(wifi_manager_init());
     ESP_ERROR_CHECK(wifi_manager_connect());
+
+    // Initialize MQTT client with LWT and announce connection
+    ESP_LOGI(TAG, "Initializing MQTT...");
+    ESP_ERROR_CHECK(mqtt_client_init());
 
     // Device-specific initialization based on config.h
 #ifdef DEVICE_TYPE_RELAY
