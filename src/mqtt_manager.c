@@ -175,6 +175,11 @@ esp_err_t mqtt_publish_connection_status(void)
     return ESP_OK;
 }
 
+esp_mqtt_client_handle_t mqtt_get_client(void)
+{
+    return mqtt_client;
+}
+
 void mqtt_client_stop(void)
 {
     if (mqtt_client != NULL) {

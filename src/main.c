@@ -7,6 +7,10 @@
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 
+#ifdef DEVICE_TYPE_TEMP_SENSOR
+#include "device_temp.h"
+#endif
+
 static const char *TAG = "MAIN";
 
 void app_main(void)
@@ -42,7 +46,13 @@ void app_main(void)
     ESP_LOGI(TAG, "Device Type: TEMPERATURE SENSOR");
     ESP_LOGI(TAG, "GPIO: %d", TEMP_SENSOR_GPIO);
     ESP_LOGI(TAG, "Publish Interval: %d ms", TEMP_PUBLISH_INTERVAL_MS);
-    // TODO: Initialize temperature sensor module
+
+    // Initialize temperature sensor
+    ESP_ERROR_CHECK(temp_sensor_init());
+
+    // Start publishing temperature readings
+    ESP_LOGI(TAG, "Starting temperature publishing task...");
+    ESP_ERROR_CHECK(temp_sensor_start_publishing(mqtt_get_client()));
 #endif
 
     // Main loop

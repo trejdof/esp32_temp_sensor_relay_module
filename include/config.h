@@ -9,8 +9,8 @@
 // ============================================
 // DEVICE TYPE SELECTION (uncomment ONE)
 // ============================================
-#define DEVICE_TYPE_RELAY
-//#define DEVICE_TYPE_TEMP_SENSOR
+//#define DEVICE_TYPE_RELAY
+#define DEVICE_TYPE_TEMP_SENSOR
 
 // ============================================
 // WiFi Configuration
