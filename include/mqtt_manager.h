@@ -1,5 +1,5 @@
-#ifndef MQTT_CLIENT_H
-#define MQTT_CLIENT_H
+#ifndef MQTT_MANAGER_H
+#define MQTT_MANAGER_H
 
 #include "esp_err.h"
 
@@ -26,4 +26,4 @@ esp_err_t mqtt_publish_connection_status(void);
  */
 void mqtt_client_stop(void);
 
-#endif // MQTT_CLIENT_H
+#endif // MQTT_MANAGER_H

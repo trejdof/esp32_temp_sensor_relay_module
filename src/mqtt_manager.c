@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-#include "mqtt_client.h"
-#include "mqtt_client.h"
 #include "esp_log.h"
 #include "config.h"
 #include "esp_wifi.h"
 #include "esp_netif.h"
+#include "mqtt_client.h"  // ESP-IDF MQTT library
+#include "mqtt_manager.h"  // Our header
 
 static const char *TAG = "MQTT_CLIENT";
 static esp_mqtt_client_handle_t mqtt_client = NULL;
@@ -114,6 +114,8 @@ esp_err_t mqtt_client_init(void)
         .broker.address.uri = MQTT_BROKER_URI,
         .credentials.username = MQTT_USERNAME,
         .credentials.authentication.password = MQTT_PASSWORD,
+        .network.timeout_ms = 5000,
+        .session.keepalive = 20,  // 20 seconds keepalive (faster disconnect detection for testing)
         .session.last_will.topic = MQTT_TOPIC_STATUS,
         .session.last_will.msg = lwt_payload,
         .session.last_will.msg_len = strlen(lwt_payload),

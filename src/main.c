@@ -5,7 +5,7 @@
 #include "nvs_flash.h"
 #include "config.h"
 #include "wifi_manager.h"
-#include "mqtt_client.h"
+#include "mqtt_manager.h"
 
 static const char *TAG = "MAIN";
 
