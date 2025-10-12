@@ -1,0 +1,22 @@
+# ESP-IDF Log Level Configuration
+# This reduces the verbosity of ESP-IDF system components
+
+# Set default log level to WARNING (only show warnings and errors from system)
+CONFIG_LOG_DEFAULT_LEVEL_WARN=y
+CONFIG_LOG_DEFAULT_LEVEL=2
+
+# Set maximum log level to INFO (allows your app to still use ESP_LOGI)
+CONFIG_LOG_MAXIMUM_LEVEL_INFO=y
+CONFIG_LOG_MAXIMUM_LEVEL=3
+
+# Disable verbose boot messages
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y
+CONFIG_BOOTLOADER_LOG_LEVEL=2
+
+# Reduce WiFi logs to ERROR only
+CONFIG_LOG_DEFAULT_LEVEL_WIFI=1
+
+# You can add more component-specific log levels here as needed
+# Examples:
+# CONFIG_LOG_DEFAULT_LEVEL_MQTT=1
+# CONFIG_LOG_DEFAULT_LEVEL_HTTP_CLIENT=1
