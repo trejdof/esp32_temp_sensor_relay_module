@@ -7,6 +7,10 @@
 #include "mqtt_client.h"  // ESP-IDF MQTT library
 #include "mqtt_manager.h"  // Our header
 
+#ifdef DEVICE_TYPE_RELAY
+#include "device_relay.h"
+#endif
+
 static const char *TAG = "MQTT_CLIENT";
 static esp_mqtt_client_handle_t mqtt_client = NULL;
 
@@ -47,10 +51,18 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
             // Publish online status with IP address
             mqtt_publish_connection_status();
 
-            // Subscribe to command topic for relay devices
+            // Subscribe to topics for relay devices
             #ifdef DEVICE_TYPE_RELAY
             int msg_id = esp_mqtt_client_subscribe(mqtt_client, MQTT_TOPIC_COMMAND, 1);
             ESP_LOGI(TAG, "Subscribed to %s, msg_id=%d", MQTT_TOPIC_COMMAND, msg_id);
+
+            msg_id = esp_mqtt_client_subscribe(mqtt_client, MQTT_TOPIC_STATE_RESPONSE, 1);
+            ESP_LOGI(TAG, "Subscribed to %s, msg_id=%d", MQTT_TOPIC_STATE_RESPONSE, msg_id);
+
+            // Request current state from webapp
+            ESP_LOGI(TAG, "Requesting state sync from webapp...");
+            msg_id = esp_mqtt_client_publish(mqtt_client, MQTT_TOPIC_STATE_REQUEST, "REQUEST", 7, 1, 0);
+            ESP_LOGI(TAG, "State sync request sent, msg_id=%d", msg_id);
             #endif
 
             break;
@@ -78,12 +90,49 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
             // Handle incoming messages here
             #ifdef DEVICE_TYPE_RELAY
-            if (strncmp(event->topic, MQTT_TOPIC_COMMAND, event->topic_len) == 0) {
-                // TODO: Handle relay command (TOGGLE)
-                ESP_LOGI(TAG, "Received command for relay");
+            // Handle state sync response
+            if (strncmp(event->topic, MQTT_TOPIC_STATE_RESPONSE, event->topic_len) == 0) {
+                ESP_LOGI(TAG, "Received state sync response: %.*s", event->data_len, event->data);
 
-                // Send ACK
-                esp_mqtt_client_publish(mqtt_client, MQTT_TOPIC_ACK, "ACK", 0, 1, 0);
+                // Set relay state based on response
+                if (strncmp(event->data, "ON", event->data_len) == 0) {
+                    relay_set_state(true);
+                    ESP_LOGI(TAG, "State synced: Relay set to ON");
+                } else if (strncmp(event->data, "OFF", event->data_len) == 0) {
+                    relay_set_state(false);
+                    ESP_LOGI(TAG, "State synced: Relay set to OFF");
+                } else {
+                    ESP_LOGW(TAG, "Unknown state response: %.*s", event->data_len, event->data);
+                }
+
+                // Send sync ACK
+                int ack_msg_id = esp_mqtt_client_publish(mqtt_client, MQTT_TOPIC_STATE_SYNC_ACK, "ACK", 3, 1, 0);
+                ESP_LOGI(TAG, "State sync ACK sent, msg_id=%d", ack_msg_id);
+            }
+            // Handle normal control commands
+            else if (strncmp(event->topic, MQTT_TOPIC_COMMAND, event->topic_len) == 0) {
+                // Handle ON/OFF commands
+                if (strncmp(event->data, "ON", event->data_len) == 0) {
+                    ESP_LOGI(TAG, "Received ON command for relay");
+
+                    // Send ACK first
+                    int ack_msg_id = esp_mqtt_client_publish(mqtt_client, MQTT_TOPIC_ACK, "ACK", 3, 1, 0);
+                    ESP_LOGI(TAG, "Sent ACK, msg_id=%d", ack_msg_id);
+
+                    // Set relay to ON
+                    relay_set_state(true);
+                } else if (strncmp(event->data, "OFF", event->data_len) == 0) {
+                    ESP_LOGI(TAG, "Received OFF command for relay");
+
+                    // Send ACK first
+                    int ack_msg_id = esp_mqtt_client_publish(mqtt_client, MQTT_TOPIC_ACK, "ACK", 3, 1, 0);
+                    ESP_LOGI(TAG, "Sent ACK, msg_id=%d", ack_msg_id);
+
+                    // Set relay to OFF
+                    relay_set_state(false);
+                } else {
+                    ESP_LOGW(TAG, "Unknown command: %.*s (expected ON or OFF)", event->data_len, event->data);
+                }
             }
             #endif
             break;

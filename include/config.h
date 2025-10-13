@@ -9,8 +9,8 @@
 // ============================================
 // DEVICE TYPE SELECTION (uncomment ONE)
 // ============================================
-//#define DEVICE_TYPE_RELAY
-#define DEVICE_TYPE_TEMP_SENSOR
+#define DEVICE_TYPE_RELAY
+//#define DEVICE_TYPE_TEMP_SENSOR
 
 // ============================================
 // WiFi Configuration
@@ -26,9 +26,12 @@
 #ifdef DEVICE_TYPE_RELAY
     #define DEVICE_NAME "relay"
     #define DEVICE_TYPE_STR "relay"
-    #define MQTT_TOPIC_COMMAND "branko/boiler/control"       // Subscribe: receives TOGGLE commands
-    #define MQTT_TOPIC_ACK "branko/boiler/ack"               // Publish: sends ACK after receiving command
-    #define MQTT_TOPIC_STATUS "branko/devices/relay/status"  // Publish: device connection status
+    #define MQTT_TOPIC_COMMAND "branko/boiler/control"                  // Subscribe: receives ON/OFF commands
+    #define MQTT_TOPIC_ACK "branko/boiler/ack"                          // Publish: sends ACK after receiving command
+    #define MQTT_TOPIC_STATUS "branko/devices/relay/status"             // Publish: device connection status
+    #define MQTT_TOPIC_STATE_REQUEST "branko/boiler/state/request"      // Publish: request current state on boot
+    #define MQTT_TOPIC_STATE_RESPONSE "branko/boiler/state/response"    // Subscribe: receive current state from webapp
+    #define MQTT_TOPIC_STATE_SYNC_ACK "branko/boiler/state/sync_ack"    // Publish: sends ACK after state sync complete
     #define RELAY_GPIO 2
 #endif
 

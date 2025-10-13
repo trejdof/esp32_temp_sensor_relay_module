@@ -11,6 +11,10 @@
 #include "device_temp.h"
 #endif
 
+#ifdef DEVICE_TYPE_RELAY
+#include "device_relay.h"
+#endif
+
 static const char *TAG = "MAIN";
 
 void app_main(void)
@@ -39,7 +43,11 @@ void app_main(void)
 #ifdef DEVICE_TYPE_RELAY
     ESP_LOGI(TAG, "Device Type: RELAY SWITCH");
     ESP_LOGI(TAG, "GPIO: %d", RELAY_GPIO);
-    // TODO: Initialize relay module
+
+    // Initialize relay
+    ESP_ERROR_CHECK(relay_init());
+
+    ESP_LOGI(TAG, "Relay initialized and ready to receive TOGGLE commands via MQTT");
 #endif
 
 #ifdef DEVICE_TYPE_TEMP_SENSOR

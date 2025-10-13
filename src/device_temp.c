@@ -1,10 +1,13 @@
+#include "config.h"
+
+#ifdef DEVICE_TYPE_TEMP_SENSOR
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "device_temp.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "config.h"
 #include "mqtt_client.h"  // ESP-IDF MQTT library
 
 static const char *TAG = "TEMP_SENSOR";
@@ -106,3 +109,5 @@ esp_err_t temp_sensor_start_publishing(esp_mqtt_client_handle_t client)
 
     return ESP_OK;
 }
+
+#endif // DEVICE_TYPE_TEMP_SENSOR
