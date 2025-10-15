@@ -42,7 +42,7 @@ void app_main(void)
     // Device-specific initialization based on config.h
 #ifdef DEVICE_TYPE_RELAY
     ESP_LOGI(TAG, "Device Type: RELAY SWITCH");
-    ESP_LOGI(TAG, "GPIO: %d", RELAY_GPIO);
+    ESP_LOGI(TAG, "GPIO: %d", RELAY_GPIO_PIN);
 
     // Initialize relay
     ESP_ERROR_CHECK(relay_init());
@@ -52,7 +52,7 @@ void app_main(void)
 
 #ifdef DEVICE_TYPE_TEMP_SENSOR
     ESP_LOGI(TAG, "Device Type: TEMPERATURE SENSOR");
-    ESP_LOGI(TAG, "GPIO: %d", TEMP_SENSOR_GPIO);
+    ESP_LOGI(TAG, "I2C SDA: GPIO%d, SCL: GPIO%d", I2C_SDA_PIN, I2C_SCL_PIN);
     ESP_LOGI(TAG, "Publish Interval: %d ms", TEMP_PUBLISH_INTERVAL_MS);
 
     // Initialize temperature sensor

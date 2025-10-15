@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include "esp_err.h"
 
-// Relay GPIO pin (IO2)
-#define RELAY_GPIO_PIN 2
+// Relay GPIO pin (IO27 / D27)
+#define RELAY_GPIO_PIN 27
 
 /**
  * @brief Initialize the relay GPIO
